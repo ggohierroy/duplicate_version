@@ -76,6 +76,13 @@ function HelloWorldApp() {
         let i = 0;
         while (i < newRecords.length) {
             const recordBatch = newRecords.slice(i, i + BATCH_SIZE);
+
+            // check for permissions
+            const createRecordsCheckResult = cardAttributesTable.checkPermissionsForCreateRecords(recordBatch);
+            if (!createRecordsCheckResult.hasPermission) {
+                alert(createRecordsCheckResult.reasonDisplayString);
+            }
+
             // awaiting the delete means that next batch won't be deleted until the current
             // batch has been fully deleted, keeping you under the rate limit
             await cardAttributesTable.createRecordsAsync(recordBatch);
